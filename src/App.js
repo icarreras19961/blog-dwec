@@ -1,4 +1,4 @@
-import "./App.css";
+import "./index.css";
 import Navbar from "./Navbar";
 import Inicio from "./Inicio";
 function App() {
