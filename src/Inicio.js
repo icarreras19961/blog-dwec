@@ -18,49 +18,43 @@ const Inicio = () => {
   //   console.log("Te saludo " + input);
   // };
 
-  const [blogs, setBlogs] = useState([
-    { titulo: "Mi nueva web", body: "texo_original.txt", autor: "Ivan", id: 1 },
-    {
-      titulo: "Tortilla de patata",
-      body: "Parabailarlabamba",
-      autor: "Pepe",
-      id: 2,
-    },
-    {
-      titulo: "Me comeria un caballo",
-      body: "AwanaBumBembemWochuBario",
-      autor: "Ajo",
-      id: 3,
-    },
-  ]);
-
-  const [nombre, setNombre] = useState("Pedro Sanchez");
-  const handleElimanrBlog = (id) => {
-    let seHaBorrado = false;
-    const nuevoBlog = blogs.filter((blog) => blog.id !== id);
-    // setBlogs(nuevoBlog);
-    if (nuevoBlog === blogs) {
-      seHaBorrado = true;
-      console.log(seHaBorrado);
-    } else {
-      seHaBorrado = false;
-      console.log(seHaBorrado);
-    }
-  };
+  const [blogs, setBlogs] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, serError] = useState(null);
 
   useEffect(() => {
-    console.log("useEffect es machista");
-    console.log(blogs);
-  }, [nombre]);
+    setTimeout(() => {
+      fetch("http://localhost:8000/blogs")
+        .then((res) => {
+          console.log(res);
+          if (!res.ok) {
+            throw Error("No se ha podido recurerar la informacion");
+          } else {
+            return res.json();
+          }
+        })
+        .then((datos) => {
+          // console.log(datos);
+          setBlogs(datos);
+          setCargando(false);
+        })
+        .catch((err) => {
+          console.log(err.message);
+          setCargando(false);
+
+          serError(err.message);
+        });
+    }, 300);
+  }, []);
+
   //Props
   return (
     <div className="home">
-      <BlogList
-        blogs={blogs}
-        titulo="Listado de Blogs"
-        handleElimanrBlog={handleElimanrBlog}
-      />
-      <BlogList
+      {cargando && <div>Cargando...</div>}
+      {error && <div>{error}</div>}
+      {blogs && <BlogList blogs={blogs} titulo="Listado de Blogs" />}
+
+      {/* <BlogList
         blogs={blogs.filter((blog) => blog.autor === "Ivan")}
         titulo="Ivan Blogs"
         handleElimanrBlog={handleElimanrBlog}
@@ -71,7 +65,7 @@ const Inicio = () => {
         handleElimanrBlog={handleElimanrBlog}
       />
       <p>{nombre}</p>
-      <button onClick={() => setNombre("Feijo")}>Cambio de nombre</button>
+      <button onClick={() => setNombre("Feijo")}>Cambio de nombre</button> */}
       {/* <h2>Pagina de inicio</h2>
       <p>
         {nombre} tiene {numero} años
