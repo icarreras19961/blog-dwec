@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import BlogList from "./blogList";
+import useFetch from "./useFetch";
 
 const Inicio = () => {
   // Hooks
@@ -18,34 +19,11 @@ const Inicio = () => {
   //   console.log("Te saludo " + input);
   // };
 
-  const [blogs, setBlogs] = useState(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, serError] = useState(null);
-
-  useEffect(() => {
-    setTimeout(() => {
-      fetch("http://localhost:8000/blogs")
-        .then((res) => {
-          console.log(res);
-          if (!res.ok) {
-            throw Error("No se ha podido recurerar la informacion");
-          } else {
-            return res.json();
-          }
-        })
-        .then((datos) => {
-          // console.log(datos);
-          setBlogs(datos);
-          setCargando(false);
-        })
-        .catch((err) => {
-          console.log(err.message);
-          setCargando(false);
-
-          serError(err.message);
-        });
-    }, 300);
-  }, []);
+  const {
+    sotad: blogs,
+    cargando,
+    error,
+  } = useFetch("http://localhost:8000/blogs");
 
   //Props
   return (
